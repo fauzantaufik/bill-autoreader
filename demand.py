@@ -1,4 +1,6 @@
 import math
+from datetime import date
+from typing import Union
 
 
 class DemandPriceUnitEnum:
@@ -58,3 +60,25 @@ def demand_price_unit(
             return DemandPriceUnitEnum.price_per_usage_per_day
         else:
             return DemandPriceUnitEnum.unknown
+
+
+def is_monthly_demand(
+    demand: Union[float, list],
+    start_period: date = None,
+    end_period: date = None,
+):
+    if not isinstance(demand, list):
+        return False
+    else:
+        if start_period and end_period:
+            # Calculate the number of complete months between start_period and end_period
+            months = (
+                (end_period.year - start_period.year) * 12
+                + (end_period.month - start_period.month)
+                + 1
+            )
+            # Check if the length of the demand list matches the number of months
+            return len(demand) == months
+        else:
+            # If no start and end periods are provided, check if the demand list is non-empty
+            return len(demand) > 0
