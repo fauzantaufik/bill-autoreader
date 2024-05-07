@@ -1,4 +1,4 @@
-from utils import calculate_months_between_dates
+from bill_autoreader.utils import calculate_months_between_dates
 import pytest
 from datetime import date
 

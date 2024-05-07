@@ -1,5 +1,5 @@
 from datetime import date
-from demand import DemandPriceUnitEnum
+from bill_autoreader.demand import DemandPriceUnitEnum
 
 
 sample_demand_data_monthly_per_usage_per_day = [

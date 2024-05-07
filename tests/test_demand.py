@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from demand import (
+from bill_autoreader.demand import (
     demand_price_unit,
     DemandPriceUnitEnum,
     is_monthly_demand,
@@ -9,7 +9,7 @@ from demand import (
 from tests.data.demand import (
     sample_demand_data_monthly_per_usage_per_day,
     sample_demand_non_monthly_per_usage_per_day,
-    sample_demand_monthly_per_usage,
+    sample_demand_per_usage,
 )
 
 
@@ -99,7 +99,7 @@ def test_is_monthly_demand_partial_month():
     "case",
     sample_demand_data_monthly_per_usage_per_day
     + sample_demand_non_monthly_per_usage_per_day
-    + sample_demand_monthly_per_usage,
+    + sample_demand_per_usage,
 )
 def test_demand_structure_with_multipliers(case):
     """Test to check demand structure calculation including multipliers."""

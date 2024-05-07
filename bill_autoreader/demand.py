@@ -1,7 +1,11 @@
 import math
 from datetime import date
-from utils import calculate_months_between_dates, to_list, combine_into_list
-from typing import Union, List, Dict
+from bill_autoreader.utils import (
+    calculate_months_between_dates,
+    to_list,
+    combine_into_list,
+)
+from typing import Union, List, Dict, TypedDict, Optional
 
 
 class DemandPriceUnitEnum:
@@ -105,13 +109,19 @@ def get_demand_multiplier(
     ]
 
 
+class DemandStructureResponse(TypedDict):
+    monthly_demand: bool
+    price_unit: DemandPriceUnitEnum
+    multipliers: Optional[Dict[str, List[float]]]
+
+
 def get_demand_structure(
     nonsummer_demand: Dict[str, Union[float, List[float]]],
     summer_demand: Dict[str, Union[float, List[float]]],
     start_date: date,
     end_date: date,
     loss_factor: float = 1.0,
-) -> dict:
+) -> DemandStructureResponse:
     """
     Analyze the structure of demand based on billing period and demand data for summer and non-summer,
     taking into account a loss factor.
