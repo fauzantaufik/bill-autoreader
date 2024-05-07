@@ -163,7 +163,6 @@ def get_demand_structure(
             0
         ]  # Assuming all entries have the same unit
 
-    print("combine_demand", combine_demand)
     results["monthly_demand"] = is_monthly_demand(
         combine_demand["price"], start_date, end_date
     )
