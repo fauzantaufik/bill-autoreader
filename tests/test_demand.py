@@ -1,5 +1,12 @@
+import pytest
 from datetime import date
-from demand import demand_price_unit, DemandPriceUnitEnum, is_monthly_demand
+from demand import (
+    demand_price_unit,
+    DemandPriceUnitEnum,
+    is_monthly_demand,
+    get_demand_structure,
+    get_demand_multiplier,
+)
 
 
 def test_demand_price_unit_with_billing_days_price_per_usage():
@@ -82,3 +89,58 @@ def test_is_monthly_demand_single_month():
 def test_is_monthly_demand_partial_month():
     # Check behavior when the end date does not fully include the last month
     assert is_monthly_demand([100, 200], date(2022, 1, 15), date(2022, 2, 14)) == True
+
+
+sample_demand_data_monthly_per_usage_per_day = [
+    {
+        "input": {
+            "summer_demand": {"usage": [100], "price": [10], "subtotal": [12000]},
+            "nonsummer_demand": {
+                "usage": [150],
+                "price": [15],
+                "subtotal": [22500],
+            },
+            "start_date": date(2024, 3, 20),  # 12 days
+            "end_date": date(2024, 4, 10),  # 10 days
+        },
+        "expected": {
+            "monthly_demand": True,  # Adjust based on expected results
+            "price_unit": DemandPriceUnitEnum.price_per_usage_per_day,
+            "multipliers": {
+                "summer": [12],
+                "nonsummer": [10],
+            },
+        },
+    },
+    {
+        "input": {
+            "summer_demand": {"usage": 100, "price": 10, "subtotal": 12000},
+            "nonsummer_demand": {
+                "usage": [150],
+                "price": [15],
+                "subtotal": [22500],
+            },
+            "start_date": date(2024, 3, 20),  # 12 days
+            "end_date": date(2024, 4, 10),  # 10 days
+        },
+        "expected": {
+            "monthly_demand": True,  # Adjust based on expected results
+            "price_unit": DemandPriceUnitEnum.price_per_usage_per_day,
+            "multipliers": {
+                "summer": [12],
+                "nonsummer": [10],
+            },
+        },
+    },
+]
+
+
+@pytest.mark.parametrize("case", sample_demand_data_monthly_per_usage_per_day)
+def test_demand_structure_with_multipliers(case):
+    """Test to check demand structure calculation including multipliers."""
+    params = case["input"]
+    expected = case["expected"]
+    result = get_demand_structure(**params)
+
+    # Verify that multipliers are calculated as expected
+    assert result == expected
