@@ -5,7 +5,9 @@ from bill_autoreader.demand import (
     DemandPriceUnitEnum,
     is_monthly_demand,
     get_demand_structure,
+    classify_demand_period,
 )
+from bill_autoreader.constants import SUMMER_DEMAND, NONSUMMER_DEMAND
 from tests.data.demand import (
     sample_demand_data_monthly_per_usage_per_day,
     sample_demand_non_monthly_per_usage_per_day,
@@ -109,3 +111,38 @@ def test_demand_structure_with_multipliers(case):
 
     # Verify that multipliers are calculated as expected
     assert result == expected
+
+
+# classify demand period
+def test_within_summer_months():
+    # Test dates fully within summer months
+    assert (
+        classify_demand_period(date(2023, 1, 10), date(2023, 2, 20)) == SUMMER_DEMAND
+    ), "Should classify as summer demand."
+
+
+def test_cross_year_summer():
+    # Test dates crossing from December to January
+    assert (
+        classify_demand_period(date(2023, 12, 25), date(2024, 1, 5)) == SUMMER_DEMAND
+    ), "Should classify as summer demand."
+
+
+def test_non_summer_months():
+    # Test dates outside summer months
+    assert (
+        classify_demand_period(date(2023, 4, 10), date(2023, 5, 15)) == NONSUMMER_DEMAND
+    ), "Should classify as non-summer demand."
+
+
+def test_summer_to_non_summer_transition():
+    # Test a date range starting in summer and ending in a non-summer month
+    assert (
+        classify_demand_period(date(2023, 3, 28), date(2023, 4, 1)) == NONSUMMER_DEMAND
+    ), "Should classify as non-summer demand."
+
+
+def test_invalid_date_order():
+    # Optionally test behavior for date ranges where start date is after end date
+    with pytest.raises(ValueError):
+        classify_demand_period(date(2023, 5, 10), date(2023, 4, 1))

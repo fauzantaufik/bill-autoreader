@@ -5,6 +5,7 @@ from bill_autoreader.utils import (
     to_list,
     combine_into_list,
 )
+from bill_autoreader.constants import SUMMER_DEMAND, NONSUMMER_DEMAND
 from typing import Union, List, Dict, TypedDict, Optional
 
 
@@ -191,3 +192,25 @@ def get_demand_structure(
             )
 
     return results
+
+
+def classify_demand_period(start_date: date, end_date: date):
+    """
+    Determines if a given date range falls within the summer months in Australia for demand classification.
+    """
+    # Define the months that constitute summer in Australia
+    summer_months = [12, 1, 2, 3]  # December, January, February, March
+
+    # Check for invalid date order
+    if start_date > end_date:
+        raise ValueError("Start date must be before or on the same day as end date.")
+
+    # Check if both dates are within the summer months
+    if start_date.month in summer_months and end_date.month in summer_months:
+        # Additional check if the end date is in the next year
+        if start_date.month == 12 and end_date.month in summer_months[1:]:
+            return SUMMER_DEMAND
+        # Check for same year period
+        elif start_date.year == end_date.year:
+            return SUMMER_DEMAND
+    return NONSUMMER_DEMAND
