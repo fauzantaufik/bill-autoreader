@@ -100,7 +100,7 @@ def get_demand_multiplier(
     - List[float]: A list of calculated multipliers for each demand.
     """
     return [
-        round(subtotal / (usage * price), 2)
+        int(round(subtotal / (usage * price), 2))
         for subtotal, usage, price in zip(subtotals, usages, prices)
     ]
 
@@ -167,16 +167,13 @@ def get_demand_structure(
         combine_demand["price"], start_date, end_date
     )
 
-    # Calculate multipliers if the data corresponds to monthly demand and the unit is price per usage per day
-    if (
-        results["monthly_demand"]
-        and results["price_unit"] == DemandPriceUnitEnum.price_per_usage_per_day
-    ):
+    if results["price_unit"] == DemandPriceUnitEnum.price_per_usage_per_day:
         demand_names = ["nonsummer", "summer"]
         results["multipliers"] = {key: [] for key in demand_names}
         for demand_name, demand_val in zip(
             demand_names, [nonsummer_demand, summer_demand]
         ):
+            print("demand_val", demand_val)
             results["multipliers"][demand_name] = get_demand_multiplier(
                 to_list(demand_val["usage"]),
                 to_list(demand_val["price"]),
