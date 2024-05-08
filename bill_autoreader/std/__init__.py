@@ -29,7 +29,7 @@ def identify_tariffs(ori_tariff_names: List[str], std_tariff: str) -> list[str]:
     return list(set(found_tariffs))
 
 
-def standardize_tariffs(
+def map_to_standardize_tariffs(
     tariffs: List[str], tariff_group: str = "energy_consumption"
 ) -> Dict[str, str]:
     """

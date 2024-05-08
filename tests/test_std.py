@@ -1,5 +1,9 @@
 import pytest
-from bill_autoreader.std import get_regex_patterns, identify_tariffs
+from bill_autoreader.std import (
+    get_regex_patterns,
+    identify_tariffs,
+    map_to_standardize_tariffs,
+)
 from bill_autoreader.std.patterns import TariffPatterns
 from bill_autoreader.std.retailer import collect_all_tariffs, RETAILERS_TARIFFS
 from bill_autoreader.constants import (
@@ -52,3 +56,45 @@ def test_identify_tariffs_found(std_tariff):
     """Test identifying tariffs when patterns match."""
     expected = collect_all_tariffs(RETAILERS_TARIFFS, [std_tariff])
     assert set(expected) == set(identify_tariffs(ALL_TARIFFS, std_tariff))
+
+
+class TestStandardizeTariffs:
+
+    def test_standardize_known_tariffs(self):
+        # Test with a list of known tariff names
+        tariffs = ["Peak Usage", "Off Peak Usage", "Unknown Tariff"]
+        expected_result = {
+            "Peak Usage": PEAK,  # Assuming 'PEAK' is a standardized name in TYPE_TARIFFS
+            "Off Peak Usage": OFF_PEAK,  # Assuming 'OFF_PEAK' is a standardized name
+            "Unknown Tariff": None,  # Expecting unrecognized tariffs to be None
+        }
+        tariff_group = "energy_consumption"  # Example group
+        result = map_to_standardize_tariffs(tariffs, tariff_group)
+        assert result == expected_result
+
+    def test_standardize_duplicate_tariffs(self):
+        # Test with a list of known tariff names
+        tariffs = ["First", "Next", "Next", "Supply Charge"]
+        expected_result = {
+            "First": PEAK,
+            "Next": PEAK,
+            "Supply Charge": SUPPLY_CHARGE,
+        }
+        tariff_group = "energy_consumption"  # Example group
+        result = map_to_standardize_tariffs(tariffs, tariff_group)
+        assert result == expected_result
+
+    def test_empty_tariff_list(self):
+        # Test with an empty list
+        tariffs = []
+        expected_result = {}
+        tariff_group = "energy_consumption"
+        result = map_to_standardize_tariffs(tariffs, tariff_group)
+        assert result == expected_result
+
+    def test_non_existent_group(selfs):
+        # Test with a non-existent tariff group
+        tariffs = ["Peak Usage", "Off Peak Usage"]
+        tariff_group = "non_existent_group"
+        with pytest.raises(KeyError):
+            map_to_standardize_tariffs(tariffs, tariff_group)
