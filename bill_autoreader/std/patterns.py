@@ -70,6 +70,7 @@ class TariffPatterns(UnbundlePatterns):
         # Include 'On peak'
         r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*on peak\b.*$",
         "Consumption Charge",
+        "total consumption",
     ]
 
     OFF_PEAK = [

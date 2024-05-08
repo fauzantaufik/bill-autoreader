@@ -172,14 +172,15 @@ SHELL_TARIFFS = {
     "VIC PEAK": PEAK,
     "VIC Off Peak": OFF_PEAK,
 }
+POWERDIRECT_TARIFFS = {"Peak": PEAK, "Off peak": OFF_PEAK, "Shoulder": SHOULDER}
+ENERGYTRADE_TARIFFS = {"Consumption Charge (kWh)": PEAK, "Daily Charge": SUPPLY_CHARGE}
 WIN_TARIFFS = {
     "Off-Peak Charge": OFF_PEAK,
     "Peak Charge": PEAK,
     "Supply Charge": SUPPLY_CHARGE,
 }
+ENSA_TARIFFS = {"Total Consumption": PEAK, "Daily Supply Charge": SUPPLY_CHARGE}
 
-POWERDIRECT_TARIFFS = {"Peak": PEAK, "Off peak": OFF_PEAK, "Shoulder": SHOULDER}
-ENERGYTRADE_TARIFFS = {"Consumption Charge (kWh)": PEAK, "Daily Charge": SUPPLY_CHARGE}
 RETAILERS_TARIFFS = [
     TANGO_TARIFFS,
     ORIGIN_TARIFFS,
@@ -207,6 +208,8 @@ RETAILERS_TARIFFS = [
     ELYSIAN_TARIFFS,
     POWERCLUB_TARIFFS,
     SHELL_TARIFFS,
+    WIN_TARIFFS,
+    ENSA_TARIFFS,
 ]
 
 
