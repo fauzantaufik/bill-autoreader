@@ -8,13 +8,14 @@ class UnbundlePatterns:
     SRES = ["SRES"]
     SREC = ["SREC"]
     VEET = ["VEET"]
+    PRC = ["PRC"]
     AEMO_ANCILLARY = ["ancillary"]
     AEMO_POOL_FEES = ["pool"]
     PARTICIPANT_CHARGE = ["participant"]
 
-    ENVIRONMENT = LRET + ESC + SRES + LRET + SREC + VEET
+    ENVIRONMENT = LRET + ESC + SRES + LRET + SREC + VEET + PRC
     MARKET = AEMO_ANCILLARY + AEMO_POOL_FEES + PARTICIPANT_CHARGE
-    UNBUNDLED = ENVIRONMENT + MARKET
+    UNBUNDLED = ENVIRONMENT + MARKET + ["AEMO", "GEC", "RET"]
 
 
 class TariffPatterns(UnbundlePatterns):
@@ -35,16 +36,13 @@ class TariffPatterns(UnbundlePatterns):
         "%d-%B-%Y",
     ]
 
-    # Charge Table
     PEAK = [
-        # has peak and doesnt contain off/summer/demand before step
-        r"^[\.]*((?!(off|summer|demand|shoulder|solar|controlled)).)*step",
-        # has peak and doesnt contain off/summer/demand before peak,
-        # r"^[\.]*((?!(off|summer|demand|shoulder|solar|controlled)).)*peak (usage|energy|charge|period|consumption)",
-        # r"^[\.]*((?!(off|summer|demand|shoulder|solar|controlled)).)*(peak\s|\bpeak)(usage|energy|charge|period|consumption)",
-        # has usage and doesnt contain off/summer/demand before peak,
-        r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled)\b).*\bpeak\b.*$",
-        r"^[\.]*((?!(off|summer|demand|shoulder|solar|controlled)).)*usage",
+        # Step-based patterns
+        r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*step\b.*$",
+        # Patterns specifically excluding 'off', 'summer', 'demand', etc.
+        r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*peak\b.*(usage|energy|charge|period|consumption)",
+        # Direct match excluding unwanted words
+        r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*\busage\b.*$",
         "^summer peak$",
         "retail peak",
         "retail - peak",
@@ -54,24 +52,23 @@ class TariffPatterns(UnbundlePatterns):
         "cmg - peak",
         "^peak$",
         r"^peak\s\(.*?\)$",
-        # r"^(?!.*\boff\b).*\bpeak\b.*$",  # has peak and doesnt contain off before peak,
         "^peak gas",
         "general usage",
         "anytime",
         "any time",
         "flat usage",
-        "^(?!.*feed-in).*standard.*",  # feed in is for solar export
+        r"^(?!.*\b(?:off|shoulder|offpeak usage)\b).*standard.*$",  # Excludes 'off', 'shoulder', 'offpeak'
         "total peak",
         "electricity consumption",
-        # TODO: contains "all usage but does not contain off-peak, shoulder, controlled etc"
         "all usage",
         "next",
         "first",
         "balance",
-        # lpg pattern
         "metered lpg",
         "kg",
         "lpg propane",
+        # Include 'On peak'
+        r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*on peak\b.*$",
     ]
 
     OFF_PEAK = [
@@ -93,6 +90,7 @@ class TariffPatterns(UnbundlePatterns):
         r"s\w+y\s*ch\w+e",  # s[any chars]y[optional whitespace]ch[anychars]e
         "supply days",
         "network daily charge",
+        "access charge",
         "service to property charge",
         "service",
         r"service\s*to\s*property",
@@ -108,11 +106,21 @@ class TariffPatterns(UnbundlePatterns):
         "nonsummer_demand",
         "Non-Summer Demand",
         "non summer",
+        "non-summer",
         r"^[\.]*((?!(off|peak)).)*winter",
     ]
-    UNKNOWN_DEMAND = ["unknown_demand", "demand", "capacity"]
+    UNKNOWN_DEMAND = [
+        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b).*\bdemand\b",  # Matches 'demand' but excludes 'summer' or 'nonsummer'
+        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b).*\bcapacity\b",  # Matches 'capacity' but excludes 'summer' or 'nonsummer'
+        "unknown_demand",  # If this literal label is expected
+    ]
     SOLAR_FIT = ["solar_fit", "solar", "feed-in"]
-    CONTROLLED_LOAD = ["controlled_load", "controlled load", "CL2", "dedicated circuit"]
+    CONTROLLED_LOAD = [
+        "controlled_load",
+        "controlled load",
+        "CL\d+",
+        "dedicated circuit",
+    ]
     METERING_CHARGE = ["metering_charge", "metering", "Microgrid Child"]
     OTHER = [r"^other$", "AEMO Charges"]
 

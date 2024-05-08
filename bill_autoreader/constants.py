@@ -58,6 +58,7 @@ TYPE_TARIFFS = {
     "energy_consumption": ENERGY_CONSUMPTION_TARIFF,
     "market_tariff": MARKET_TARIFF,
 }
+UNBUNDLED = "unbundled"
 
 
 USAGE_DISCOUNT = "usage_discount"
