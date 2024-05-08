@@ -9,6 +9,8 @@ from bill_autoreader.constants import (
     UNBUNDLED,
     CONTROLLED_LOAD,
     METERING_CHARGE,
+    SUMMER_DEMAND,
+    SOLAR_FIT,
 )
 
 
@@ -30,6 +32,7 @@ COVAU_TARIFFS = {
 }
 ORIGIN_TARIFFS = {
     "Peak": PEAK,
+    "General Usage": PEAK,
     "Shoulder": SHOULDER,
     "Off-Peak": OFF_PEAK,
     "Network Access Charge": SUPPLY_CHARGE,
@@ -38,6 +41,7 @@ ORIGIN_TARIFFS = {
     "AEMO FRC Operations": UNBUNDLED,
     "PRC Charge": UNBUNDLED,
     "Access Charge": SUPPLY_CHARGE,
+    "Solar Meter Charge": SOLAR_FIT,
 }
 NBE_TARIFFS = {
     "Peak - step 1": PEAK,
@@ -49,8 +53,15 @@ NBE_TARIFFS = {
     "Network Daily Charge (Cost)": SUPPLY_CHARGE,
     "GEC Charge": UNBUNDLED,
     "RET (STCs & LGCs)": UNBUNDLED,
+    "Controlled Load": CONTROLLED_LOAD,
 }
-MOMENTUM_TARIFFS = {"Peak": PEAK, "Off Peak": OFF_PEAK, "Daily Charge": SUPPLY_CHARGE}
+MOMENTUM_TARIFFS = {
+    "Peak": PEAK,
+    "Off Peak": OFF_PEAK,
+    "Daily Charge": SUPPLY_CHARGE,
+    "Metering Charge": METERING_CHARGE,
+    "Summer Demand (KW/Mth)": SUMMER_DEMAND,
+}
 BLUENRG_TARIFFS = {
     "Daily Supply Charge": SUPPLY_CHARGE,
     "Peak period": PEAK,
@@ -88,6 +99,7 @@ SUMO_TARIFFS = {
     "Off Peak Energy": OFF_PEAK,
     "Peak Energy": PEAK,
     "Standing Charge": SUPPLY_CHARGE,
+    "Demand c/kW/Day": UNKNOWN_DEMAND,
 }
 SYNERGY_RETAILER = {
     "On peak": PEAK,
@@ -109,6 +121,7 @@ REAMPED_TARIFFS = {
     "Daily Supply Charge": SUPPLY_CHARGE,
 }
 SIMPLY_TARIFFS = {
+    "Supply Service Charge": SUPPLY_CHARGE,
     "Supply Charges ( 31 Days )": SUPPLY_CHARGE,
     "First": PEAK,
     "Next": PEAK,
@@ -120,7 +133,53 @@ Q_TARIFFS = {
     "Usage Shoulder Usage": SHOULDER,
     "Peak Demand": UNKNOWN_DEMAND,
 }
+DISCOVER_TARIFFS = {
+    "Peak": PEAK,
+    "Off Peak": OFF_PEAK,
+    "Daily Supply": SUPPLY_CHARGE,
+    "Non Summer Peak": NONSUMMER_DEMAND,
+    "Summer Peak Demand": SUMMER_DEMAND,
+}
+AUSTRALIAENERGY_TARIFFS = {
+    "* Total Plan 12 (Business) Peak Consumption - Block 1": PEAK,
+    "Peak Consumption - Block 2": PEAK,
+    "* Total Plan 12 (Business) Supply Charge": SUPPLY_CHARGE,
+    "* Flexi Plan (Home) Shoulder Consumption (3.25311 kWh/day)^": SHOULDER,
+    "* Flexi Plan (Home) Off Peak Consumption (1.61511 kWh/day)^": OFF_PEAK,
+    "* Flexi Plan (Home) Supply Charge": SUPPLY_CHARGE,
+    "* Flexi Plan (Home) Peak Consumption (1.39990 kWh/day)^": PEAK,
+    "* Flexi Plan (Home) Demand Non Summer Non Winter (01/10/2023 - 31/10/2023": NONSUMMER_DEMAND,
+    "* Flexi Plan (Home) Demand Summer (01/11/2023 - 30/11/2023) ": SUMMER_DEMAND,
+}
+ENOVA_TARIFFS = {
+    "Daily Charge Business Flat": SUPPLY_CHARGE,
+    "Anytime Energy Usage": PEAK,
+}
+GEE_TARIFFS = {
+    "Peak Usage": PEAK,
+    "Shoulder Usage": SHOULDER,
+    "Demand (KW/Month)": UNKNOWN_DEMAND,
+}
+MOJO_TARIFFS = {"Usage Anytime Usage": PEAK}
+ELYSIAN_TARIFFS = {
+    "Included Peak Usage": PEAK,
+    "Supply Days": SUPPLY_CHARGE,
+    "Additional Peak Usage": PEAK,
+}
+POWERCLUB_TARIFFS = {"Peak": PEAK, "High Season Demand": SUMMER_DEMAND}
+SHELL_TARIFFS = {
+    "Meter Charge": METERING_CHARGE,
+    "VIC PEAK": PEAK,
+    "VIC Off Peak": OFF_PEAK,
+}
+WIN_TARIFFS = {
+    "Off-Peak Charge": OFF_PEAK,
+    "Peak Charge": PEAK,
+    "Supply Charge": SUPPLY_CHARGE,
+}
 
+POWERDIRECT_TARIFFS = {"Peak": PEAK, "Off peak": OFF_PEAK, "Shoulder": SHOULDER}
+ENERGYTRADE_TARIFFS = {"Consumption Charge (kWh)": PEAK, "Daily Charge": SUPPLY_CHARGE}
 RETAILERS_TARIFFS = [
     TANGO_TARIFFS,
     ORIGIN_TARIFFS,
@@ -138,6 +197,16 @@ RETAILERS_TARIFFS = [
     REAMPED_TARIFFS,
     SIMPLY_TARIFFS,
     Q_TARIFFS,
+    DISCOVER_TARIFFS,
+    AUSTRALIAENERGY_TARIFFS,
+    POWERDIRECT_TARIFFS,
+    ENERGYTRADE_TARIFFS,
+    ENOVA_TARIFFS,
+    GEE_TARIFFS,
+    MOJO_TARIFFS,
+    ELYSIAN_TARIFFS,
+    POWERCLUB_TARIFFS,
+    SHELL_TARIFFS,
 ]
 
 

@@ -69,6 +69,7 @@ class TariffPatterns(UnbundlePatterns):
         "lpg propane",
         # Include 'On peak'
         r"^(?!.*\b(?:off|summer|demand|shoulder|solar|controlled|shoulder usage|off peak|offpeak usage)\b).*on peak\b.*$",
+        "Consumption Charge",
     ]
 
     OFF_PEAK = [
@@ -101,7 +102,12 @@ class TariffPatterns(UnbundlePatterns):
         "standing charge",
     ]
     OTHER_CHARGES = ["fee", "credit card", "Meter Read Fee", "debit card", "meter read"]
-    SUMMER_DEMAND = ["summer_demand", "^(?!(non)).*Summer"]
+    SUMMER_DEMAND = [
+        "summer_demand",  # Literal keyword
+        r"^(?!.*\bnon[- ]summer\b).*Summer",  # Exclude non-summer variants (with hyphens or spaces)
+        r"high season demand",  # Literal keyword for high season demand
+    ]
+
     NONSUMMER_DEMAND = [
         "nonsummer_demand",
         "Non-Summer Demand",
@@ -110,9 +116,9 @@ class TariffPatterns(UnbundlePatterns):
         r"^[\.]*((?!(off|peak)).)*winter",
     ]
     UNKNOWN_DEMAND = [
-        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b).*\bdemand\b",  # Matches 'demand' but excludes 'summer' or 'nonsummer'
-        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b).*\bcapacity\b",  # Matches 'capacity' but excludes 'summer' or 'nonsummer'
-        "unknown_demand",  # If this literal label is expected
+        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b)(?!.*\bhigh season demand\b).*\bdemand\b",  # Matches 'demand' but excludes 'summer', 'nonsummer', and 'high season demand'
+        r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b)(?!.*\bhigh season demand\b).*\bcapacity\b",  # Matches 'capacity' but excludes 'summer', 'nonsummer', and 'high season demand'
+        "unknown_demand",  # Literal keyword
     ]
     SOLAR_FIT = ["solar_fit", "solar", "feed-in"]
     CONTROLLED_LOAD = [
@@ -121,7 +127,14 @@ class TariffPatterns(UnbundlePatterns):
         "CL\d+",
         "dedicated circuit",
     ]
-    METERING_CHARGE = ["metering_charge", "metering", "Microgrid Child"]
+    METERING_CHARGE = [
+        r"^(?!.*\bsolar\b).*meter charge",  # Matches 'meter charge' excluding those containing 'solar'
+        r"^(?!.*\bsolar\b).*metering",  # Matches 'metering' excluding those containing 'solar'
+        "metering_charge",  # Literal keyword
+        "Microgrid Child",  # Literal keyword
+        r"^(?!.*\bsolar\b).*meter",  # Matches 'meter' excluding those containing 'solar'
+    ]
+
     OTHER = [r"^other$", "AEMO Charges"]
 
     # Discount Table
