@@ -1,5 +1,10 @@
 from datetime import date, timedelta
 from typing import Union, List, Any, Optional
+import unicodedata
+
+
+def normalize_string(s):
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
 
 
 def days_between_dates_inclusive(start_date: date, end_date: date) -> int:
