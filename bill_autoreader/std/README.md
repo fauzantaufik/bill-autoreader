@@ -9,7 +9,7 @@ In the energy market, comparing tariff structures across various retailers is cr
 - Standardization: Create clear tariff categories that encompass different naming patterns across energy retailers.
 - Generalization: Recognize familiar tariff names and smartly categorize new or unseen names by learning from existing patterns. This ensures new names are classified accurately.
 - Flexibility: Quickly add or modify patterns as more tariff names are discovered from different retailers.
-- Scalability: Handle a growing list of retailers by allowing easy updates without disturbing the core system.
+- Scalability: Handle a growing list of retailers by allowing easy updates.
 - Robustness & Maintanibility: Automated tests ensure that updates or additions don't interfere with existing functionality, preventing changes that could disrupt tariff identification.
 
 ### Adding New Tariff Names
