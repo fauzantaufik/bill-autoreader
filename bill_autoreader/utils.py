@@ -3,6 +3,20 @@ from typing import Union, List, Any, Optional
 import unicodedata
 
 
+def convert_to_boolean(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        value = value.strip().lower()
+        if value in ["true", "yes", "1"]:
+            return True
+        elif value in ["false", "no", "0"]:
+            return False
+    if isinstance(value, (int, float)):
+        return value == 1
+    raise ValueError("Cannot convert value to boolean")
+
+
 def normalize_string(s):
     return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
 

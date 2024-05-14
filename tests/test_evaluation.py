@@ -3,6 +3,7 @@ from bill_autoreader.evaluation import (
     match_retailer,
     match_site_identity,
     match_additional_tariff,
+    match_divide_demand,
 )
 
 
@@ -132,3 +133,54 @@ def test_match_additional_price_label(
         )
         == expected
     )
+
+
+@pytest.mark.parametrize(
+    "predicted_value, actual_value, expected",
+    [
+        (True, True, True),
+        (False, False, True),
+        ("true", "true", True),
+        ("false", "false", True),
+        ("yes", "true", True),
+        ("no", "false", True),
+        ("1", "1", True),
+        ("0", "0", True),
+        (1, 1, True),
+        (0, 0, True),
+        (1.0, 1.0, True),
+        (0.0, 0.0, True),
+        ("true", True, True),
+        ("false", False, True),
+        ("yes", True, True),
+        ("no", False, True),
+        ("1", True, True),
+        ("0", False, True),
+        (1, True, True),
+        (0, False, True),
+        (1.0, True, True),
+        (0.0, False, True),
+        ("true", "yes", True),
+        ("false", "no", True),
+        ("yes", "1", True),
+        ("no", "0", True),
+        ("yes", "true", True),
+        ("no", "false", True),
+        ("YES", "true", True),
+        ("NO", "false", True),
+        (" True ", "true", True),
+        (" False ", "false", True),
+        (True, "false", False),
+        (False, "true", False),
+        ("yes", "no", False),
+        ("1", "0", False),
+        (1, 0, False),
+        (1.0, 0.0, False),
+        ("invalid", "true", False),
+        ("true", "invalid", False),
+        (None, True, False),
+        (True, None, False),
+    ],
+)
+def test_match_divide_demand(predicted_value, actual_value, expected):
+    assert match_divide_demand(predicted_value, actual_value) == expected

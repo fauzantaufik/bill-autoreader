@@ -4,6 +4,7 @@ from bill_autoreader.evaluation.utils import (
     is_within_levenshtein_distance,
 )
 from rapidfuzz import fuzz
+from bill_autoreader.utils import convert_to_boolean
 
 
 def match_site_identity(predicted_value, actual_value):
@@ -59,6 +60,15 @@ def match_additional_tariff(
     return True
 
 
+def match_divide_demand(predicted_value, actual_value):
+    try:
+        predicted_bool = convert_to_boolean(predicted_value)
+        actual_bool = convert_to_boolean(actual_value)
+    except ValueError:
+        return False
+    return predicted_bool == actual_bool
+
+
 def match_retailer(autoreader_value, actual_value):
     if autoreader_value is None:
         return False
@@ -93,4 +103,5 @@ variable_to_evaluation_func = {
     "site_identity": match_site_identity,
     "retailer": match_retailer,
     "additional_tariff": match_additional_tariff,
+    "divide_demand": match_divide_demand,
 }
