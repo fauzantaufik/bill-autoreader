@@ -3,10 +3,39 @@ from bill_autoreader.evaluation.utils import (
     is_name_match,
     is_within_levenshtein_distance,
 )
+from rapidfuzz import fuzz
 
 
 def match_site_identity(predicted_value, actual_value):
     return str(predicted_value)[:10] == str(actual_value)[:10]
+
+
+def standardize_string(value):
+    return value.lower().replace("_", " ").strip()
+
+
+def match_additional_label(predicted_tariffs, actual_tariffs, threshold=80):
+    if not isinstance(predicted_tariffs, list) or not isinstance(actual_tariffs, list):
+        raise ValueError("Both predicted_tariffs and actual_tariffs should be lists.")
+
+    if len(predicted_tariffs) != len(actual_tariffs):
+        return False
+
+    standardized_predicted = [
+        standardize_string(predicted) for predicted in predicted_tariffs
+    ]
+    standardized_actual = [standardize_string(actual) for actual in actual_tariffs]
+
+    for predicted in standardized_predicted:
+        if not any(
+            fuzz.ratio(predicted, actual) >= threshold for actual in standardized_actual
+        ):
+            return False
+    return True
+
+
+def match_additional_price():
+    pass
 
 
 def match_retailer(autoreader_value, actual_value):

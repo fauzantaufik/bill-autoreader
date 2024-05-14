@@ -1,5 +1,9 @@
 import pytest
-from bill_autoreader.evaluation import match_retailer, match_site_identity
+from bill_autoreader.evaluation import (
+    match_retailer,
+    match_site_identity,
+    match_additional_label,
+)
 
 
 @pytest.mark.parametrize(
@@ -79,3 +83,54 @@ def test_mixed_type_match():
 
 def test_mixed_type_no_match():
     assert match_site_identity(1234567890, "abcdefghij") == False
+
+
+@pytest.mark.parametrize(
+    "predicted_tariffs, actual_tariffs, expected",
+    [
+        (
+            ["Off-Peak Usage", "Demand Charge"],
+            ["Demand Charge", "Off-Peak Usage"],
+            True,
+        ),
+        (
+            ["Green Energy Surcharge", "Metering Service Fee"],
+            ["metering service fee", "green energy surcharge"],
+            True,
+        ),
+        (
+            ["Feed-in Tariff", "Environmental Recovery"],
+            ["Feed-in Tariff", "Demand Charge"],
+            False,
+        ),
+        (
+            ["Solar Feed-in Tariff"],
+            ["Solar Feed-in Tariff", "Off-Peak Usage", "Environmental Recovery"],
+            False,
+        ),
+        (
+            ["Feed-in Tariff", "Demand Charge", "Green Energy Surcharge"],
+            ["Green Energy Surcharge", "Feed-in Tariff"],
+            False,
+        ),
+        (
+            ["Renewable Energy Fee", "Time-of-Use Rate"],
+            ["renewable energy fee", "time-of-use rate"],
+            True,
+        ),
+        (
+            ["Service Charge", "Late Payment Fee"],
+            ["LATE PAYMENT FEE", "SERVICE CHARGE"],
+            True,
+        ),
+        (
+            ["Network Access Charge", "Service Charge"],
+            ["NETWORK ACCESS CHARGE", "FIXED CHARGE"],
+            False,
+        ),
+        (["Carbon Offset Charge"], ["carbon_offset_charge"], True),
+        (["Fixed Supply Charge"], ["variable supply charge"], False),
+    ],
+)
+def test_match_additional_label(predicted_tariffs, actual_tariffs, expected):
+    assert match_additional_label(predicted_tariffs, actual_tariffs) == expected
