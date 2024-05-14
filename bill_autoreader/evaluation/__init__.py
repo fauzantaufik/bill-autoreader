@@ -14,28 +14,49 @@ def standardize_string(value):
     return value.lower().replace("_", " ").strip()
 
 
-def match_additional_label(predicted_tariffs, actual_tariffs, threshold=80):
-    if not isinstance(predicted_tariffs, list) or not isinstance(actual_tariffs, list):
-        raise ValueError("Both predicted_tariffs and actual_tariffs should be lists.")
+def match_additional_tariff(
+    predicted_labels, predicted_prices, actual_labels, actual_prices, threshold=80
+):
+    # Check if all inputs are lists and have the same length
+    if not (
+        isinstance(predicted_labels, list)
+        and isinstance(predicted_prices, list)
+        and isinstance(actual_labels, list)
+        and isinstance(actual_prices, list)
+    ):
+        raise ValueError("All inputs should be lists.")
 
-    if len(predicted_tariffs) != len(actual_tariffs):
+    if not (
+        len(predicted_labels)
+        == len(predicted_prices)
+        == len(actual_labels)
+        == len(actual_prices)
+    ):
         return False
 
-    standardized_predicted = [
-        standardize_string(predicted) for predicted in predicted_tariffs
+    # Standardize labels
+    normalized_predicted_labels = [
+        standardize_string(label) for label in predicted_labels
     ]
-    standardized_actual = [standardize_string(actual) for actual in actual_tariffs]
+    normalized_actual_labels = [standardize_string(label) for label in actual_labels]
 
-    for predicted in standardized_predicted:
-        if not any(
-            fuzz.ratio(predicted, actual) >= threshold for actual in standardized_actual
-        ):
+    # Create pairs of standardized labels and prices
+    predicted_pairs = list(zip(normalized_predicted_labels, predicted_prices))
+    actual_pairs = list(zip(normalized_actual_labels, actual_prices))
+
+    # Match each predicted pair to an actual pair
+    for predicted_label, predicted_price in predicted_pairs:
+        match_found = False
+        for actual_label, actual_price in actual_pairs:
+            if (
+                fuzz.ratio(predicted_label, actual_label) >= threshold
+                and predicted_price == actual_price
+            ):
+                match_found = True
+                break
+        if not match_found:
             return False
     return True
-
-
-def match_additional_price():
-    pass
 
 
 def match_retailer(autoreader_value, actual_value):
@@ -71,4 +92,5 @@ def match_retailer(autoreader_value, actual_value):
 variable_to_evaluation_func = {
     "site_identity": match_site_identity,
     "retailer": match_retailer,
+    "additional_tariff": match_additional_tariff,
 }

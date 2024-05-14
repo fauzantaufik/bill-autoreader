@@ -2,7 +2,7 @@ import pytest
 from bill_autoreader.evaluation import (
     match_retailer,
     match_site_identity,
-    match_additional_label,
+    match_additional_tariff,
 )
 
 
@@ -86,51 +86,49 @@ def test_mixed_type_no_match():
 
 
 @pytest.mark.parametrize(
-    "predicted_tariffs, actual_tariffs, expected",
+    "predicted_labels, predicted_prices, actual_labels, actual_prices, expected",
     [
-        (
-            ["Off-Peak Usage", "Demand Charge"],
-            ["Demand Charge", "Off-Peak Usage"],
-            True,
-        ),
+        (["Off-Peak Usage"], [0.12], ["off_peak_usage"], [0.12], True),
         (
             ["Green Energy Surcharge", "Metering Service Fee"],
+            [0.05, 1.00],
             ["metering service fee", "green energy surcharge"],
+            [1.00, 0.05],
             True,
         ),
-        (
-            ["Feed-in Tariff", "Environmental Recovery"],
-            ["Feed-in Tariff", "Demand Charge"],
-            False,
-        ),
+        (["Feed-in Tariff"], [0.08], ["feed_in tariff"], [0.07], False),
         (
             ["Solar Feed-in Tariff"],
-            ["Solar Feed-in Tariff", "Off-Peak Usage", "Environmental Recovery"],
-            False,
-        ),
-        (
-            ["Feed-in Tariff", "Demand Charge", "Green Energy Surcharge"],
-            ["Green Energy Surcharge", "Feed-in Tariff"],
+            [0.10],
+            ["Solar Feed-in Tariff", "Off-Peak Usage"],
+            [0.10, 0.12],
             False,
         ),
         (
             ["Renewable Energy Fee", "Time-of-Use Rate"],
-            ["renewable energy fee", "time-of-use rate"],
+            [0.02, 0.15],
+            ["renewable energy fee", "time_of_use rate"],
+            [0.02, 0.15],
             True,
         ),
         (
             ["Service Charge", "Late Payment Fee"],
+            [10.00, 5.00],
             ["LATE PAYMENT FEE", "SERVICE CHARGE"],
+            [5.00, 10.00],
             True,
         ),
-        (
-            ["Network Access Charge", "Service Charge"],
-            ["NETWORK ACCESS CHARGE", "FIXED CHARGE"],
-            False,
-        ),
-        (["Carbon Offset Charge"], ["carbon_offset_charge"], True),
-        (["Fixed Supply Charge"], ["variable supply charge"], False),
+        (["Network Access Charge"], [3.50], ["network_access_charge"], [3.50], True),
+        (["Carbon Offset Charge"], [0.03], ["carbon offset charge"], [0.03], True),
+        (["Fixed Supply Charge"], [20.00], ["variable supply charge"], [20.00], False),
     ],
 )
-def test_match_additional_label(predicted_tariffs, actual_tariffs, expected):
-    assert match_additional_label(predicted_tariffs, actual_tariffs) == expected
+def test_match_additional_price_label(
+    predicted_labels, predicted_prices, actual_labels, actual_prices, expected
+):
+    assert (
+        match_additional_tariff(
+            predicted_labels, predicted_prices, actual_labels, actual_prices
+        )
+        == expected
+    )
