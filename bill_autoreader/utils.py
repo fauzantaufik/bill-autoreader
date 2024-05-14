@@ -3,6 +3,16 @@ from typing import Union, List, Any, Optional
 import unicodedata
 
 
+def normalize_list(value):
+    if value is None:
+        return []
+    if all(isinstance(i, (list, type(None))) for i in value):
+        return [
+            normalize_list(sublist) if sublist is not None else [] for sublist in value
+        ]
+    return value
+
+
 def convert_to_boolean(value):
     if isinstance(value, bool):
         return value

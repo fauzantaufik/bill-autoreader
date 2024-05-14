@@ -4,7 +4,7 @@ from bill_autoreader.evaluation.utils import (
     is_within_levenshtein_distance,
 )
 from rapidfuzz import fuzz
-from bill_autoreader.utils import convert_to_boolean
+from bill_autoreader.utils import convert_to_boolean, normalize_list
 
 
 def match_site_identity(predicted_value, actual_value):
@@ -58,6 +58,13 @@ def match_additional_tariff(
         if not match_found:
             return False
     return True
+
+
+def match_monthly_demand_multiplier(predicted_value, actual_value):
+    normalized_predicted = normalize_list(predicted_value)
+    normalized_actual = normalize_list(actual_value)
+
+    return normalized_predicted == normalized_actual
 
 
 def match_divide_demand(predicted_value, actual_value):

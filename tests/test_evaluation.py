@@ -4,6 +4,7 @@ from bill_autoreader.evaluation import (
     match_site_identity,
     match_additional_tariff,
     match_divide_demand,
+    match_monthly_demand_multiplier,
 )
 
 
@@ -184,3 +185,28 @@ def test_match_additional_price_label(
 )
 def test_match_divide_demand(predicted_value, actual_value, expected):
     assert match_divide_demand(predicted_value, actual_value) == expected
+
+
+@pytest.mark.parametrize(
+    "predicted_price, actual_price, expected",
+    [
+        (None, None, True),
+        (None, [], True),
+        ([], None, True),
+        ([], [], True),
+        ([None, None], [[], []], True),
+        ([1, 2, 3], [1, 2, 3], True),
+        ([1, 2, 3], [3, 2, 1], False),
+        ([None, [1, 2]], [[], [1, 2]], True),
+        ([[1, 2], [3, 4]], [[1, 2], [3, 4]], True),
+        ([[1, 2], [3, 4]], [[3, 4], [1, 2]], False),
+        ([[1, 2], None], [[1, 2], []], True),
+        ([[1, 2]], [[1, 2]], True),
+        ([[1, 2]], [[2, 1]], False),
+        ([[1, 2], [3, 4]], [[1, 2], [4, 3]], False),
+        ([1, [2, 3]], [1, [2, 3]], True),
+        ([1, [2, 3]], [1, [3, 2]], False),
+    ],
+)
+def test_match_monthly_demand_multiplier(predicted_price, actual_price, expected):
+    assert match_monthly_demand_multiplier(predicted_price, actual_price) == expected
