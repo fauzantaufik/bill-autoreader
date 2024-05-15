@@ -5,6 +5,7 @@ from bill_autoreader.evaluation import (
     match_additional_tariff,
     match_divide_demand,
     match_monthly_demand_multiplier,
+    match_read_type,
 )
 
 
@@ -210,3 +211,20 @@ def test_match_divide_demand(predicted_value, actual_value, expected):
 )
 def test_match_monthly_demand_multiplier(predicted_price, actual_price, expected):
     assert match_monthly_demand_multiplier(predicted_price, actual_price) == expected
+
+
+@pytest.mark.parametrize(
+    "predicted_value, actual_value, expected",
+    [
+        ("estimated", "estimated", True),
+        ("Estimated", "estimated", True),
+        ("ESTIMATED", "estimated", True),
+        ("unknown", None, True),
+        (None, "unknown", True),
+        ("estimated", "actual", False),
+        ("substituted", "unknown", False),
+        (None, "actual", False),
+    ],
+)
+def test_match_read_type(predicted_value, actual_value, expected):
+    assert match_read_type(predicted_value, actual_value) == expected

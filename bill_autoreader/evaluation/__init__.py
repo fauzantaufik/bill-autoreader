@@ -67,6 +67,18 @@ def match_monthly_demand_multiplier(predicted_value, actual_value):
     return normalized_predicted == normalized_actual
 
 
+def normalize_read_type(value: str):
+    if value is None or value.strip().lower() == "unknown":
+        return None
+    return value.strip().lower()
+
+
+def match_read_type(predicted_value: str, actual_value: str):
+    normalized_predicted = normalize_read_type(predicted_value)
+    normalized_actual = normalize_read_type(actual_value)
+    return normalized_predicted == normalized_actual
+
+
 def match_divide_demand(predicted_value, actual_value):
     try:
         predicted_bool = convert_to_boolean(predicted_value)
