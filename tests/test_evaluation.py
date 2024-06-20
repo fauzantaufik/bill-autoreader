@@ -124,6 +124,13 @@ def test_mixed_type_no_match():
         (["Network Access Charge"], [3.50], ["network_access_charge"], [3.50], True),
         (["Carbon Offset Charge"], [0.03], ["carbon offset charge"], [0.03], True),
         (["Fixed Supply Charge"], [20.00], ["variable supply charge"], [20.00], False),
+        (
+            ["Service Charge", "Late Payment Fee"],
+            [10.00, 5.00],
+            ["LATE PAYMENT FEE", None],
+            [5.00, 10.00],
+            False,
+        ),
     ],
 )
 def test_match_additional_price_label(

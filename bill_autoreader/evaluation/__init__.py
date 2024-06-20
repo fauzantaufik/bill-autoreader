@@ -12,7 +12,19 @@ def match_site_identity(predicted_value, actual_value):
 
 
 def standardize_string(value):
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        value = str(value)
+
     return value.lower().replace("_", " ").strip()
+
+
+def validate_and_standardize_labels(labels):
+    if not isinstance(labels, list):
+        raise ValueError("Labels should be provided as a list.")
+
+    return [standardize_string(label) for label in labels]
 
 
 def match_additional_tariff(
@@ -36,10 +48,8 @@ def match_additional_tariff(
         return False
 
     # Standardize labels
-    normalized_predicted_labels = [
-        standardize_string(label) for label in predicted_labels
-    ]
-    normalized_actual_labels = [standardize_string(label) for label in actual_labels]
+    normalized_predicted_labels = validate_and_standardize_labels(predicted_labels)
+    normalized_actual_labels = validate_and_standardize_labels(actual_labels)
 
     # Create pairs of standardized labels and prices
     predicted_pairs = list(zip(normalized_predicted_labels, predicted_prices))
@@ -49,10 +59,11 @@ def match_additional_tariff(
     for predicted_label, predicted_price in predicted_pairs:
         match_found = False
         for actual_label, actual_price in actual_pairs:
-            if (
+            label_and_value_match = (
                 fuzz.ratio(predicted_label, actual_label) >= threshold
                 and predicted_price == actual_price
-            ):
+            )
+            if label_and_value_match:
                 match_found = True
                 break
         if not match_found:
