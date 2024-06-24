@@ -4,7 +4,7 @@ from bill_autoreader.evaluation.utils import (
     is_within_levenshtein_distance,
 )
 from rapidfuzz import fuzz
-from bill_autoreader.utils import convert_to_boolean, normalize_list
+from bill_autoreader.utils import convert_to_boolean, normalize_list, to_list
 
 
 def match_site_identity(predicted_value, actual_value):
@@ -31,13 +31,10 @@ def match_additional_tariff(
     predicted_labels, predicted_prices, actual_labels, actual_prices, threshold=80
 ):
     # Check if all inputs are lists and have the same length
-    if not (
-        isinstance(predicted_labels, list)
-        and isinstance(predicted_prices, list)
-        and isinstance(actual_labels, list)
-        and isinstance(actual_prices, list)
-    ):
-        raise ValueError("All inputs should be lists.")
+    predicted_labels = to_list(predicted_labels)
+    predicted_prices = to_list(predicted_prices)
+    actual_labels = to_list(actual_labels)
+    actual_prices = to_list(actual_prices)
 
     if not (
         len(predicted_labels)
