@@ -84,6 +84,21 @@ class TestStandardizeTariffs:
         result = map_to_standardize_tariffs(tariffs, tariff_group)
         assert result == expected_result
 
+    def test_standardize_step(self):
+        # Test with a list of known tariff names
+        tariffs = ["Step1", "Step2", "Step3", "Step4", "Step5", "Supply Charge"]
+        expected_result = {
+            "Step1": PEAK,
+            "Step2": PEAK,
+            "Step3": PEAK,
+            "Step4": PEAK,
+            "Step5": PEAK,
+            "Supply Charge": SUPPLY_CHARGE,
+        }
+        tariff_group = "energy_consumption"  # Example group
+        result = map_to_standardize_tariffs(tariffs, tariff_group)
+        assert result == expected_result
+
     def test_empty_tariff_list(self):
         # Test with an empty list
         tariffs = []
