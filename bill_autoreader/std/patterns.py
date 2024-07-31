@@ -15,7 +15,7 @@ class UnbundlePatterns:
 
     ENVIRONMENT = LRET + ESC + SRES + LRET + SREC + VEET + PRC
     MARKET = AEMO_ANCILLARY + AEMO_POOL_FEES + PARTICIPANT_CHARGE
-    UNBUNDLED = ENVIRONMENT + MARKET + ["AEMO", "GEC", "RET"]
+    UNBUNDLED = ENVIRONMENT + MARKET + ["AEMO", "GEC"]
 
 
 class TariffPatterns(UnbundlePatterns):
