@@ -72,6 +72,8 @@ class TariffPatterns(UnbundlePatterns):
         "Consumption Charge",
         "total consumption",
         r"^step[1-5]$",
+        "Business Energy_Flat Rate",
+        "Commercial Flat Rate",
     ]
 
     OFF_PEAK = [
@@ -122,7 +124,7 @@ class TariffPatterns(UnbundlePatterns):
         r"^(?!.*\bsummer\b)(?!.*\bnonsummer\b)(?!.*\bhigh season demand\b).*\bcapacity\b",  # Matches 'capacity' but excludes 'summer', 'nonsummer', and 'high season demand'
         "unknown_demand",  # Literal keyword
     ]
-    SOLAR_FIT = ["solar_fit", "solar", "feed-in"]
+    SOLAR_FIT = ["solar_fit", "solar", "feed-in", "feed in"]
     CONTROLLED_LOAD = [
         "controlled_load",
         "controlled load",
