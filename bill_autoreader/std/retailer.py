@@ -52,7 +52,7 @@ NBE_TARIFFS = {
     "Metering Charge": METERING_CHARGE,
     "Network Daily Charge (Cost)": SUPPLY_CHARGE,
     "GEC Charge": UNBUNDLED,
-    "RET (STCs & LGCs)": UNBUNDLED,
+    # "RET (STCs & LGCs)": UNBUNDLED,
     "Controlled Load": CONTROLLED_LOAD,
 }
 MOMENTUM_TARIFFS = {
