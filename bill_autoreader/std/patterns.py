@@ -74,6 +74,7 @@ class TariffPatterns(UnbundlePatterns):
         r"^step[1-5]$",
         "Business Energy_Flat Rate",
         "Commercial Flat Rate",
+        "All Day Charge",
     ]
 
     OFF_PEAK = [
